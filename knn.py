@@ -36,10 +36,9 @@ class KNN():
         self.train_covariance = np.cov(self.train_x.T)
         self.test_covariance = np.cov(self.test_x.T)
         self.train_eigval, self.train_eigvec = np.linalg.eig(self.train_covariance)
-        self.test_eigval, self.test_eigvec = np.linalg.eig(self.test_covariance)
-
+        # self.test_eigval, self.test_eigvec = np.linalg.eig(self.test_covariance)
         # Transpose eigenvectors (see document for np.linalg.eig)
-        self.train_eigvec, self.test_eigvec = self.train_eigvec.real.T, self.test_eigvec.real.T
+        self.train_eigvec = self.train_eigvec.real.T
         # sortedIdx = np.argsort(self.train_eigval)
 
     def projection(self):
@@ -50,13 +49,11 @@ class KNN():
         self.proj_train_x = []
         self.proj_test_x = []
         self.calcEig() # Calculate eigenvalue and eigenvector (from covariance matrix)
-        print('eigvec_shape: ', self.train_eigvec[:n].shape)
-        print('train_x_shape: ',self.train_x[0].shape)
 
         for i in range(train_iter):
             self.proj_train_x.append(np.dot(self.train_eigvec[:n], self.train_x[i]))
         for i in range(test_iter):
-            self.proj_test_x.append(np.dot(self.test_eigvec[:n], self.test_x[i]))
+            self.proj_test_x.append(np.dot(self.train_eigvec[:n], self.test_x[i]))
         
         return self.proj_test_x
 
